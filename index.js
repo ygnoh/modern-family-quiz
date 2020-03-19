@@ -121,18 +121,27 @@ Luke, so far, hasn't beaten me in basketball. : Luke는 지금까지 농구에�
         const picked = storage[Math.random() * len | 0];
         const question = picked.ko;
         const answer = picked.en;
-        let response = window.prompt(`To English:\n\t${question}`);
+        let [response, reg] = getResponse(question);
 
-        while (response.trim() !== answer) {
+        while (!reg.test(answer) || !response) {
             if (response === "STOP") {
                 limit = 0;
                 break;
             }
 
             window.alert(`The answer is:\n\t${answer}\nTry again.`);
-            response = window.prompt(`To English:\n\t${question}`);
+
+            [response, reg] = getResponse(question);
         }
     }
 
     window.alert("You did well.");
+
+    function getResponse(question) {
+        let response = window.prompt(`To English:\n\t${question}`).trim();
+        let reg = new RegExp(`${response.replace(".", "\\.")}[.?!]?$`, "i");
+
+        return [response, reg];
+    }
+
 }
